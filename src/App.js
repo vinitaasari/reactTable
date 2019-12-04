@@ -1,26 +1,58 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import MaterialTable from 'material-table';
 
-function App() {
+
+export default function MaterialTableDemo() {
+  const [state, setState] = React.useState({
+    columns: [
+      { title: 'Date', field: 'date',type: 'date'  },
+      { title: 'Category', field: 'category' },
+      { title: 'Comment', field: 'comment'},
+      {
+        title: 'Added By',
+        field: 'addedby',
+     
+      },
+    ],
+    data: [
+      { date: new Date(), category: 'payments', comment: 'hello everyone', addedby: 'vinita' }
+     
+    ],
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MaterialTable
+    
+      columns={state.columns}
+      data={state.data}
+      editable={{
+       
+        onRowAdd: newData =>
+        new Promise(resolve => {
+          setTimeout(() => {
+            resolve();
+            setState(prevState => {
+              const data = [...prevState.data];
+              data.push(newData);
+              return { ...prevState, data };
+            });
+          }, 600);
+        }),
+      onRowUpdate: (newData, oldData) =>
+        new Promise(resolve => {
+          setTimeout(() => {
+            resolve();
+            if (oldData) {
+              setState(prevState => {
+                const data = [...prevState.data];
+                data[data.indexOf(oldData)] = newData;
+                return { ...prevState, data };
+              });
+            }
+          }, 600);
+        })
+      
+      }}
+    />
   );
 }
-
-export default App;
